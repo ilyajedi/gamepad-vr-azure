@@ -87,20 +87,35 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Content\accelerometer.png" />
+    <Content Include="Content\azure.png" />
+    <Content Include="Content\gamepad.png" />
+    <Content Include="Content\keyboard.png" />
+    <Content Include="Content\mouse.png" />
+    <Content Include="Content\server.png" />
+    <Content Include="Content\Styles.css" />
+    <Content Include="Content\client.png" />
+    <Content Include="favicon.ico" />
+    <Content Include="gamepad.js" />
     <Content Include="packages.config" />
+    <None Include="Properties\PublishProfiles\gamepad-vr-azure.pubxml" />
     <None Include="Scripts\jquery-1.6.4-vsdoc.js" />
     <Content Include="Scripts\jquery-1.6.4.js" />
     <Content Include="Scripts\jquery-1.6.4.min.js" />
+    <Content Include="Scripts\jquery-2.1.4.min.js" />
     <Content Include="Scripts\jquery.signalR-2.2.0.js" />
     <Content Include="Scripts\jquery.signalR-2.2.0.min.js" />
+    <Content Include="Client.html" />
+    <Content Include="Index.html" />
+    <Content Include="Server.html" />
+    <Content Include="tester.js" />
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Startup.cs" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Content\" />
-  </ItemGroup>
+  <ItemGroup />
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>

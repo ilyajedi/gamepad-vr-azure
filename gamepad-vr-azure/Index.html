@@ -1,0 +1,44 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>gamepad-vr-azure Client</title>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300' rel='stylesheet' type='text/css'>
+    <link href="/Content/Styles.css" rel="stylesheet" />
+</head>
+<body>
+    <h1 style="padding-top:50px">gamepad-vr-azure</h1>
+    <h2>Use any gamepad supported by modern browsers to play VR games on your phone via Microsoft Azure Cloud</h2>
+    <h1 style="padding-top:50px">Choose your side first!</h1>
+    <table style="padding:25px; float:left; width:50%;">
+        <tr>
+            <td style="background-color:#e2e2e2; border-radius:25px; padding-top:25px" 
+                onmouseover="this.style.backgroundColor = '#fff';" 
+                onmouseout="this.style.backgroundColor = '#e2e2e2'" 
+                onmousedown="this.style.backgroundColor = '#aaa';"
+                onclick="window.location.href='/Server.html'" >
+                <img style="width:64px; height:64px" src="/Content/server.png" />
+                <h3>Server</h3>
+                <h4>Use any gamepad supported by modern browsers to control game on your phone</h4>
+            </td>
+            </tr>
+        </table>
+    <table style="padding:25px; float:left; width:50%">
+        <tr>
+            <td style="background-color:#e2e2e2; border-radius:25px; padding-top:25px"
+                onmouseover="this.style.backgroundColor = '#fff';"
+                onmouseout="this.style.backgroundColor = '#e2e2e2'"
+                onmousedown="this.style.backgroundColor = '#aaa';"
+                onclick="window.location.href='/Client.html'">
+                <img style="width:64px; height:64px" src="/Content/client.png" />
+                <h3>Client</h3>
+                <h4>Use your phone as VR display with Google Cardobard or similar DIY headset</h4>
+            </td>
+        </tr>
+    </table>
+    <br/>
+    <div style="width:100%; float:right">
+        powered by <br/>
+        <img style="width:200px; height:auto" src="/Content/azure.png" />
+    </div>
+</body>
+</html>
