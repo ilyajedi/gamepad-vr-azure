@@ -13,16 +13,16 @@
     <h1>Step 1: Select input type</h1>
     <table style="padding:25px; float:left; width:50%;">
         <tr>
-            <td style="background-color:#e2e2e2; border-radius:25px; padding-top:25px">
-                <img style="width:64px; height:64px; opacity:0.2" src="/Content/gamepad.png" />
-                <h3 style="opacity:0.4">Gamepad (not connected)</h3>
-                <h4>Connect a gamepad first</h4>
+            <td id="gamepadbtn" style="background-color:#e2e2e2; border-radius:25px; padding-top:25px">
+                <img id="gamepadicon" style="width:64px; height:64px; opacity:0.2" src="/Content/gamepad.png" />
+                <h3 id="gamepadtext" style="opacity:0.4">Gamepad (not connected)</h3>
+                <h4 id="gamepaddesc">Connect a gamepad first</h4>
             </td>
         </tr>
     </table>
     <table style="padding:25px; float:left; width:50%">
         <tr>
-            <td style="background-color:#e2e2e2; border-radius:25px; padding-top:25px">
+            <td id="keyboardbtn" style="background-color:#e2e2e2; border-radius:25px; padding-top:25px">
                 <img style="width:64px; height:64px" src="/Content/keyboard.png" />
                 <h3>Keyboard</h3>
                 <h4>I don't have a gamepad :(</h4>
@@ -37,8 +37,97 @@
         powered by <br />
         <img style="width:200px; height:auto" src="/Content/azure.png" />
     </div>
-    <script>
 
+    <div style="opacity:0.0">
+        <div id='menu'>
+            <input type='radio' name='mode' value='visual' id='mode-visual' checked><label for='mode-visual'>Visual mode</label>
+            <input type='radio' name='mode' value='raw' id='mode-raw'><label for='mode-raw'>Raw mode</label>
+        </div>
+        <div id='no-gamepad-support'>
+            Your browser does not seem to support Gamepad API, or it might be
+            we’re not detecting it very well. Sorry!
+        </div>
+        <div id='no-gamepads-connected'>
+            No gamepads seem to be connected. Be sure to plug in a gamepad and then
+            press any of its buttons to activate it.
+        </div>
+        <ul id='gamepads'>
+            <li class='template'>
+                <div class='buttons'>
+                    <div class='face' name='button-1'></div>
+                    <div class='face' name='button-2'></div>
+                    <div class='face' name='button-3'></div>
+                    <div class='face' name='button-4'></div>
+                    <div class='top-shoulder' name='button-left-shoulder-top'></div>
+                    <div class='top-shoulder' name='button-right-shoulder-top'></div>
+                    <div class='bottom-shoulder' name='button-left-shoulder-bottom'></div>
+                    <div class='bottom-shoulder' name='button-right-shoulder-bottom'></div>
+                    <div class='select-start' name='button-select'></div>
+                    <div class='select-start' name='button-start'></div>
+                    <div class='stick' name='stick-1'></div>
+                    <div class='stick' name='stick-2'></div>
+                    <div class='face' name='button-dpad-top'></div>
+                    <div class='face' name='button-dpad-bottom'></div>
+                    <div class='face' name='button-dpad-left'></div>
+                    <div class='face' name='button-dpad-right'></div>
+                </div>
+                <div class='labels'>
+                    <label for='button-1'>?</label>
+                    <label for='button-2'>?</label>
+                    <label for='button-3'>?</label>
+                    <label for='button-4'>?</label>
+                    <label for='button-left-shoulder-top'>?</label>
+                    <label for='button-right-shoulder-top'>?</label>
+                    <label for='button-left-shoulder-bottom'>?</label>
+                    <label for='button-right-shoulder-bottom'>?</label>
+                    <label for='button-select'>?</label>
+                    <label for='button-start'>?</label>
+                    <label for='stick-1'>?</label>
+                    <label for='stick-2'>?</label>
+                    <label for='button-dpad-top'>?</label>
+                    <label for='button-dpad-bottom'>?</label>
+                    <label for='button-dpad-left'>?</label>
+                    <label for='button-dpad-right'>?</label>
+                    <label for='stick-1-axis-x'>?</label>
+                    <label for='stick-1-axis-y'>?</label>
+                    <label for='stick-2-axis-x'>?</label>
+                    <label for='stick-2-axis-y'>?</label>
+                    <div class='extra-inputs'></div>
+                </div>
+                <div class='index'></div>
+                <marquee class='name' scrolldelay='50' scrollamount='2'></marquee>
+            </li>
+        </ul>
+    </div>
+
+    <script>
+        tester.init();
+        gamepadSupport.init();
+
+        $("#keyboardbtn").on("click", function () {
+            $("#keyboardbtn").css("background-color", "#4cd964");
+            $("#gamepadbtn").css("background-color", "#e2e2e2");
+        });
+        $("#gamepadbtn").on("click", function () {
+            $("#gamepadbtn").css("background-color", "#4cd964");
+            $("#keyboardbtn").css("background-color", "#e2e2e2");
+        });
+
+        function justGotPads() {
+            console.log('gamepad connected');
+            $('#gamepadicon').css("opacity", "1.0");
+            $('#gamepadtext').css("opacity", "1.0");
+            $('#gamepadtext').html("Gamepad (ready)");
+            $('#gamepaddesc').html("Let the game begin!");
+        }
+
+        function justLostPads() {
+            console.log('gamepad disconnected');
+            $('#gamepadicon').css("opacity", "0.2");
+            $('#gamepadtext').css("opacity", "0.4");
+            $('#gamepadtext').html("Gamepad (not connected)");
+            $('#gamepaddesc').html("Connect a gamepad first");
+        }
     </script>
 </body>
 </html>
