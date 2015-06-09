@@ -16,6 +16,9 @@
  * @author mwichary@google.com (Marcin Wichary)
  */
 
+var jsoffset1 = 0;
+var jsoffset2 = 0;
+
 var tester = {
     // If the number exceeds this in any way, we treat the label as active
     // and highlight it.
@@ -197,10 +200,28 @@ var tester = {
 
                 if (value > tester.VISIBLE_THRESHOLD) {
                     labelEl.classList.add('positive');
+                    if (labelId == 'stick-1-axis-x') {
+                        jsoffset1 = 1;
+                    }
+                    if (labelId == 'stick-1-axis-y') {
+                        jsoffset2 = 1;
+                    }
                 } else {
+                    if (labelId == 'stick-1-axis-x') {
+                        jsoffset1 = 2;
+                    }
+                    if (labelId == 'stick-1-axis-y') {
+                        jsoffset2 = 2;
+                    }
                     labelEl.classList.add('negative');
                 }
             } else {
+                if (labelId == 'stick-1-axis-x') {
+                    jsoffset1 = 0;
+                }
+                if (labelId == 'stick-1-axis-y') {
+                    jsoffset2 = 0;
+                }
                 labelEl.classList.remove('visible');
                 labelEl.classList.remove('positive');
                 labelEl.classList.remove('negative');

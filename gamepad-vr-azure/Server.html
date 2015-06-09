@@ -1,19 +1,22 @@
 ﻿<!DOCTYPE html>
 <html>
 <head>
-    <title>gamepad-vr-azure Client</title>
+    <title>gamepad-vr-azure Server</title>
     <link href='http://fonts.googleapis.com/css?family=Open+Sans:300' rel='stylesheet' type='text/css'>
     <link href="/Content/Styles.css" rel="stylesheet" />
-    <script src="/Scripts/jquery-2.1.4.min.js"></script>
     <script src="/gamepad.js"></script>
     <script src="/tester.js"></script>
+    <script src="/Scripts/jquery-1.6.4.js"></script>
+    <script src="/Scripts/jquery.signalR-2.2.0.js"></script>
+    <script src="/signalr/hubs"></script>
 </head>
 <body>
     <h1>Server side</h1>
     <h1>Step 1: Select input type</h1>
     <table style="padding:25px; float:left; width:50%;">
         <tr>
-            <td id="gamepadbtn" style="background-color:#e2e2e2; border-radius:25px; padding-top:25px">
+            <td id="gamepadbtn" style="background-color:#e2e2e2; border-radius:25px; padding-top:25px"
+                onclick="selectPads();">
                 <img id="gamepadicon" style="width:64px; height:64px; opacity:0.2" src="/Content/gamepad.png" />
                 <h3 id="gamepadtext" style="opacity:0.4">Gamepad (not connected)</h3>
                 <h4 id="gamepaddesc">Connect a gamepad first</h4>
@@ -22,7 +25,8 @@
     </table>
     <table style="padding:25px; float:left; width:50%">
         <tr>
-            <td id="keyboardbtn" style="background-color:#e2e2e2; border-radius:25px; padding-top:25px">
+            <td id="keyboardbtn" style="background-color:#e2e2e2; border-radius:25px; padding-top:25px"
+                onclick="selectKeys();">
                 <img style="width:64px; height:64px" src="/Content/keyboard.png" />
                 <h3>Keyboard</h3>
                 <h4>I don't have a gamepad :(</h4>
@@ -30,7 +34,7 @@
         </tr>
     </table>
     <h1 style="width:100%; float:right">
-        Step 2: Enter this URL on your phone <br/><br/>
+        Step 2: Enter this URL on your phone <br /><br />
         <u style="color:#007aff">gamepad-vr-azure.azurewebsites.net/Client.html</u>
     </h1>
     <div style="width:100%; float:right">
@@ -38,7 +42,7 @@
         <img style="width:200px; height:auto" src="/Content/azure.png" />
     </div>
 
-    <div style="opacity:0.0">
+    <div hidden>
         <div id='menu'>
             <input type='radio' name='mode' value='visual' id='mode-visual' checked><label for='mode-visual'>Visual mode</label>
             <input type='radio' name='mode' value='raw' id='mode-raw'><label for='mode-raw'>Raw mode</label>
@@ -101,19 +105,33 @@
     </div>
 
     <script>
+
+        //Setup keyboard
+
         tester.init();
         gamepadSupport.init();
 
-        $("#keyboardbtn").on("click", function () {
+        var padsAvailable = false;
+        var currentInputMode = 0;
+
+        //Setup UI
+
+        function selectPads() {
+            if (padsAvailable) {
+                $("#gamepadbtn").css("background-color", "#4cd964");
+                $("#keyboardbtn").css("background-color", "#e2e2e2");
+                currentInputMode = 1;
+            }
+        }
+
+        function selectKeys() {
             $("#keyboardbtn").css("background-color", "#4cd964");
             $("#gamepadbtn").css("background-color", "#e2e2e2");
-        });
-        $("#gamepadbtn").on("click", function () {
-            $("#gamepadbtn").css("background-color", "#4cd964");
-            $("#keyboardbtn").css("background-color", "#e2e2e2");
-        });
+            currentInputMode = 2;
+        }
 
         function justGotPads() {
+            padsAvailable = true;
             console.log('gamepad connected');
             $('#gamepadicon').css("opacity", "1.0");
             $('#gamepadtext').css("opacity", "1.0");
@@ -122,12 +140,165 @@
         }
 
         function justLostPads() {
+            padsAvailable = false;
             console.log('gamepad disconnected');
+            $("#gamepadbtn").css("background-color", "#e2e2e2");
             $('#gamepadicon').css("opacity", "0.2");
             $('#gamepadtext').css("opacity", "0.4");
             $('#gamepadtext').html("Gamepad (not connected)");
             $('#gamepaddesc').html("Connect a gamepad first");
         }
+
+        //Setup Azure SignalR connection
+
+        var readytosend = false;
+        var chat;
+        $(function () {
+            chat = $.connection.gameHub;
+            $.connection.hub.start().done(function () {
+                readytosend = true;
+            });
+        });
+
+        //Setup WASD keyboard input
+
+        var moveLeft, moveRight, moveBackward, moveForward;
+
+        var onKeyDown = function (event) {
+            if (currentInputMode == 2) {
+                switch (event.keyCode) {
+
+                    case 38: // up
+                    case 87: // w
+                        moveForward = true;
+                        chat.server.send('server', 'up');
+                        break;
+
+                    case 37: // left
+                    case 65: // a
+                        moveLeft = true;
+                        chat.server.send('server', 'left');
+                        break;
+
+                    case 40: // down
+                    case 83: // s
+                        moveBackward = true;
+                        chat.server.send('server', 'down');
+                        break;
+
+                    case 39: // right
+                    case 68: // d
+                        moveRight = true;
+                        chat.server.send('server', 'right');
+                        break;
+
+                    case 32: // space
+                        //if (canJump === true) velocity.y += 350;
+                        //canJump = false;
+                        break;
+
+                }
+            }
+        };
+
+        var onKeyUp = function (event) {
+            if (currentInputMode == 2) {
+                switch (event.keyCode) {
+
+                    case 38: // up
+                    case 87: // w
+                        moveForward = false;
+                        chat.server.send('server', '_up');
+                        break;
+
+                    case 37: // left
+                    case 65: // a
+                        moveLeft = false;
+                        chat.server.send('server', '_left');
+                        break;
+
+                    case 40: // down
+                    case 83: // s
+                        moveBackward = false;
+                        chat.server.send('server', '_down');
+                        break;
+
+                    case 39: // right
+                    case 68: // d
+                        moveRight = false;
+                        chat.server.send('server', '_right');
+                        break;
+
+                }
+            }
+        };
+
+        document.addEventListener('keydown', onKeyDown, false);
+        document.addEventListener('keyup', onKeyUp, false);
+
+        //Finally send input to Azure
+
+        var currX = '0';
+        var currY = '0';
+
+        var main = function () {
+            var now = Date.now();
+            var delta = now - then;
+
+            if (readytosend && currentInputMode == 1) {
+                var message;
+                var message1;
+                var msgcount1 = 1;
+                var msgcount2 = 1;
+                var message2;
+                var message3;
+                if (jsoffset2 == 2) {
+                    message = 'up';
+                } else
+                    if (jsoffset2 == 1) {
+                        message = 'down';
+                    } else {
+                        msgcount1 = 2;
+                        message = '_up';
+                        message1 = '_down';
+                    }
+                if (jsoffset1 == 2) {
+                    message2 = 'left';
+                } else
+                    if (jsoffset1 == 1) {
+                        message2 = 'right';
+                    } else {
+                        msgcount2 = 2;
+                        message2 = '_left';
+                        message3 = '_right';
+                    }
+
+                if (readytosend) {
+                    chat.server.send('server', message);
+                    if (msgcount1 == 2) {
+                        chat.server.send('server', message1);
+                    }
+                    chat.server.send('server', message2);
+                    if (msgcount2 == 2) {
+                        chat.server.send('server', message3);
+                    }
+                }
+            }
+
+            //update(delta / 1000);
+
+
+            then = now;
+            // Request to do this again ASAP
+            requestAnimationFrame(main);
+        };
+
+
+        var w = window;
+        requestAnimationFrame = w.requestAnimationFrame || w.webkitRequestAnimationFrame || w.msRequestAnimationFrame || w.mozRequestAnimationFrame;
+
+        var then = Date.now();
+        main();
     </script>
 </body>
 </html>
